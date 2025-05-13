@@ -139,16 +139,16 @@ describe("fanout", () => {
       })
       .rpcAndKeys()
 
-      const fanoutAcc = await program.account.fanoutV0.fetch(fanout)
-      const cronJobAcc = await cronProgram.account.cronJobV0.fetch(cronJobK)
+    const fanoutAcc = await program.account.fanoutV0.fetch(fanout)
+    const cronJobAcc = await cronProgram.account.cronJobV0.fetch(cronJobK)
 
-      expect(fanoutAcc.name).to.equal(fanoutName)
-      expect(fanoutAcc.totalShares).to.equal(100)
+    expect(fanoutAcc.name).to.equal(fanoutName)
+    expect(fanoutAcc.totalShares).to.equal(100)
 
-      expect(cronJobAcc.name).to.equal(fanoutName)
-      expect(cronJobAcc.schedule).to.equal("0 0 * * * *")
-      expect(cronJobAcc.freeTasksPerTransaction).to.equal(0)
-      expect(cronJobAcc.numTasksPerQueueCall).to.equal(5)
+    expect(cronJobAcc.name).to.equal(fanoutName)
+    expect(cronJobAcc.schedule).to.equal("0 0 * * * *")
+    expect(cronJobAcc.freeTasksPerTransaction).to.equal(0)
+    expect(cronJobAcc.numTasksPerQueueCall).to.equal(5)
   });
 
   describe("with a fanout", () => {
@@ -163,9 +163,17 @@ describe("fanout", () => {
       const cronJobK = cronJobKey(queueAuthority, cronJobId)[0]
       cronJob = cronJobK
 
+      const now = new Date()
+      let nextSeconds = now.getSeconds() + 2
+      let nextMinutes = now.getMinutes()
+      if (nextSeconds > 59) {
+        nextSeconds = 0 + (nextSeconds - 59)
+        nextMinutes = now.getMinutes() + 1
+      }
       const { pubkeys: { fanout: fanoutK } } = await program.methods.initializeFanoutV0({
         name: fanoutName,
-        schedule: "* * * * * *",
+        // Run in 2 seconds
+        schedule: `${nextSeconds} ${nextMinutes} * * * *`,
         totalShares: 100,
       })
         .preInstructions([
@@ -228,7 +236,7 @@ describe("fanout", () => {
         await createAtaAndMint(provider, mint, 0, newWallet2.publicKey)
         const { pubkeys: { walletShare: walletShare1K } } = await program.methods.updateWalletShareV0({
           shares: 10,
-          index: 0, 
+          index: 0,
         })
           .accounts({
             payer: me,
@@ -297,19 +305,9 @@ describe("fanout", () => {
           voucher2 = voucher2K
         })
 
-        it("should claim vouchers via tuktuk", async () => {
-          // First run to trigger initial claims
-          await sendInstructions(provider, [
-            ComputeBudgetProgram.setComputeUnitLimit({ units: 1000000 }),
-            ...await runTask({
-              program: tuktukProgram,
-              task: taskKey(taskQueue, 0)[0],
-              crankTurner: me,
-            })
-          ]);
-
+        async function runAllTasks() {
           const taskQueueAcc = await tuktukProgram.account.taskQueueV0.fetch(taskQueue);
-          
+
           // Find all task IDs that need to be executed (have a 1 in the bitmap)
           const taskIds: number[] = [];
           for (let i = 0; i < taskQueueAcc.taskBitmap.length; i++) {
@@ -322,20 +320,32 @@ describe("fanout", () => {
           }
 
           // Execute all tasks in parallel
-          await Promise.all(
-            taskIds.map(async (taskId) => {
-              await sendInstructions(
-                provider,
-                [
-                  ComputeBudgetProgram.setComputeUnitLimit({ units: 1000000 }),
-                  ...await runTask({
-                    program: tuktukProgram,
-                    task: taskKey(taskQueue, taskId)[0],
-                    crankTurner: me,
-                  })]
-              );
-            })
-          );
+          for (const taskId of taskIds) {
+            const task = taskKey(taskQueue, taskId)[0]
+            const taskAcc = await tuktukProgram.account.taskV0.fetch(task)
+            if ((taskAcc.trigger.timestamp?.[0]?.toNumber() || 0) > (new Date().getTime() / 1000)) {
+              continue
+            }
+            console.log("Running task", taskId)
+            await sendInstructions(
+              provider,
+              [
+                ComputeBudgetProgram.setComputeUnitLimit({ units: 1000000 }),
+                ...await runTask({
+                  program: tuktukProgram,
+                  task: taskKey(taskQueue, taskId)[0],
+                  crankTurner: me,
+                })]
+            );
+          }
+        }
+
+        it("should claim vouchers via tuktuk", async () => {
+          // First run to trigger the cron job to trigger the tasks
+          await runAllTasks()
+          await new Promise(resolve => setTimeout(resolve, 2000))
+          // Second run to process the tasks
+          await runAllTasks()
 
           // Verify the claims were processed
           const fanoutTokenAccount = await getAccount(
@@ -361,13 +371,95 @@ describe("fanout", () => {
           // Verify vouchers were updated
           const voucher1Acc = await program.account.voucherV0.fetch(voucher1);
           const voucher2Acc = await program.account.voucherV0.fetch(voucher2);
-          
+
           const tokenInflowAcc = await program.account.tokenInflowV0.fetch(
             tokenInflowKey(fanout, mint)[0]
           );
 
           expect(voucher1Acc.lastClaimedInflow.toString()).to.equal(tokenInflowAcc.totalInflow.toString());
           expect(voucher2Acc.lastClaimedInflow.toString()).to.equal(tokenInflowAcc.totalInflow.toString());
+        })
+
+        describe("with claimed rewards", () => {
+          beforeEach(async () => {
+            await runAllTasks()
+            await new Promise(resolve => setTimeout(resolve, 2000))
+            await runAllTasks()
+          })
+
+          it("should allow closing wallet shares, vouchers, inflow, then fanout", async () => {
+            await program.methods.closeWalletShareV0()
+              .accounts({
+                walletShare: walletShare1,
+              })
+              .rpc()
+
+            await program.methods.closeVoucherV0()
+              .accounts({
+                voucher: voucher1,
+                cronJobTransaction: cronJobTransactionKey(cronJob, 0)[0],
+                tokenInflow: tokenInflowKey(fanout, mint)[0],
+              })
+              .rpc()
+
+            await program.methods.closeWalletShareV0()
+              .accounts({
+                walletShare: walletShare2,
+              })
+              .rpc()
+
+            await program.methods.closeVoucherV0()
+              .accounts({
+                voucher: voucher2,
+                cronJobTransaction: cronJobTransactionKey(cronJob, 1)[0],
+                tokenInflow: tokenInflowKey(fanout, mint)[0],
+              })
+              .rpc()
+
+            await program.methods.closeTokenInflowV0()
+              .accounts({
+                tokenInflow: tokenInflowKey(fanout, mint)[0],
+              })
+              .rpc()
+
+            await program.methods.closeFanoutV0()
+              .accounts({
+                fanout,
+                userCronJobs: userCronJobsKey(queueAuthorityKey()[0])[0],
+                cronJobNameMapping: cronJobNameMappingKey(queueAuthorityKey()[0], fanoutName)[0],
+                taskReturnAccount1: PublicKey.findProgramAddressSync(
+                  [Buffer.from("task_return_account_1"), cronJob.toBuffer()],
+                  CRON_PROGRAM_ID
+                )[0],
+                taskReturnAccount2: PublicKey.findProgramAddressSync(
+                  [Buffer.from("task_return_account_2"), cronJob.toBuffer()],
+                  CRON_PROGRAM_ID
+                )[0],
+              })
+              .rpc()
+
+            expect(
+              await program.account.tokenInflowV0.fetchNullable(tokenInflowKey(fanout, mint)[0])
+            ).to.be.null
+            expect(
+              await program.account.voucherV0.fetchNullable(voucher1)
+            ).to.be.null
+            expect(
+              await program.account.voucherV0.fetchNullable(voucher2)
+            ).to.be.null
+            expect(
+              await program.account.walletShareV0.fetchNullable(walletShare1)
+            ).to.be.null
+            expect(
+              await program.account.walletShareV0.fetchNullable(walletShare2)
+            ).to.be.null
+            expect(
+              await program.account.fanoutV0.fetchNullable(fanout)
+            ).to.be.null
+            expect(
+              await cronProgram.account.cronJobV0.fetchNullable(cronJob)
+            ).to.be.null
+          })
         })
       })
     })

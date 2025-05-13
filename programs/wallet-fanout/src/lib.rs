@@ -68,4 +68,8 @@ pub mod wallet_fanout {
   pub fn close_voucher_v0(ctx: Context<CloseVoucherV0>) -> Result<()> {
     instructions::close_voucher_v0::handler(ctx)
   }
+
+  pub fn close_fanout_v0(ctx: Context<CloseFanoutV0>) -> Result<()> {
+    instructions::close_fanout_v0::handler(ctx)
+  }
 }

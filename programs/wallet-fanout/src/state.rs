@@ -34,6 +34,8 @@ pub struct FanoutV0 {
   pub available_cron_transaction_ides: Vec<u32>,
   /// Bump seed for queue authority PDA derivation
   pub queue_authority_bump: u8,
+  /// Number of active token inflows for this fanout
+  pub num_inflows: u32,
 }
 
 impl FanoutV0 {

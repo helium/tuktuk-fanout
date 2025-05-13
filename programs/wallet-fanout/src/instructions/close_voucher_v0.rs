@@ -11,14 +11,14 @@ use crate::{
   queue_authority_seeds,
   resize_to_fit::resize_to_fit,
   state::{FanoutV0, TokenInflowV0, VoucherV0},
-  WalletShareV0,
 };
 
 #[derive(Accounts)]
 pub struct CloseVoucherV0<'info> {
   #[account(
         mut,
-        has_one = authority
+        has_one = authority,
+        has_one = cron_job,
     )]
   pub fanout: Account<'info, FanoutV0>,
   pub authority: Signer<'info>,
@@ -26,8 +26,8 @@ pub struct CloseVoucherV0<'info> {
   #[account(mut)]
   pub token_inflow: Account<'info, TokenInflowV0>,
   #[account(
-    constraint = fanout_token_account.mint == token_inflow.mint,
-    constraint = fanout_token_account.owner == fanout.key(),
+    associated_token::mint = token_inflow.mint,
+    associated_token::authority = fanout,
   )]
   pub fanout_token_account: Account<'info, TokenAccount>,
   #[account(
@@ -56,6 +56,7 @@ pub struct CloseVoucherV0<'info> {
         mut,
         seeds = [b"cron_job_transaction", cron_job.key().as_ref(), &voucher.cron_transaction_id.to_le_bytes()[..]],
         bump,
+        seeds::program = tuktuk_program::cron::ID,
     )]
   /// CHECK: Removed in CPI
   pub cron_job_transaction: AccountInfo<'info>,

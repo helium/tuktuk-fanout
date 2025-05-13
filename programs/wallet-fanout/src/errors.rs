@@ -8,4 +8,6 @@ pub enum ErrorCode {
   InvalidDataIncrease,
   #[msg("Rewards not claimed")]
   RewardsNotClaimed,
+  #[msg("Cannot close fanout with active inflows")]
+  CannotCloseFanoutWithInflows,
 }

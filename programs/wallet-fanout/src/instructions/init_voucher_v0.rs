@@ -97,6 +97,8 @@ pub fn handler(ctx: Context<InitVoucherV0>) -> Result<()> {
       rent_refund: ctx.accounts.payer.key(),
       num_vouchers: 0,
     });
+    // Increment fanout's inflow count
+    fanout.num_inflows = fanout.num_inflows.checked_add(1).unwrap();
   }
 
   // After initializing the token_inflow

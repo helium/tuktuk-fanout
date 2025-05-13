@@ -24,6 +24,7 @@ pub struct CloseTokenInflowV0<'info> {
         close = rent_refund,
         has_one = rent_refund,
         has_one = mint,
+        has_one = fanout,
         constraint = token_inflow.num_vouchers == 0,
     )]
   pub token_inflow: Account<'info, TokenInflowV0>,
@@ -54,6 +55,9 @@ pub struct CloseTokenInflowV0<'info> {
 }
 
 pub fn handler(ctx: Context<CloseTokenInflowV0>) -> Result<()> {
+  // Decrement fanout's inflow count
+  ctx.accounts.fanout.num_inflows = ctx.accounts.fanout.num_inflows.checked_sub(1).unwrap();
+
   // Transfer remaining tokens to authority
   if ctx.accounts.fanout_token_account.amount > 0 {
     token::transfer(

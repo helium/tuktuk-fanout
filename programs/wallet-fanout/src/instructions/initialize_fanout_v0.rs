@@ -100,6 +100,7 @@ pub fn handler(ctx: Context<InitializeFanoutV0>, args: InitializeFanoutV0Args) -
     next_cron_transaction_id: 0,
     available_cron_transaction_ides: vec![],
     total_shares_issued: 0,
+    num_inflows: 0,
   });
 
   initialize_cron_job_v0(

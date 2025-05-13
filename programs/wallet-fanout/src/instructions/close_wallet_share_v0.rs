@@ -11,6 +11,7 @@ pub struct CloseWalletShareV0<'info> {
   pub authority: Signer<'info>,
   #[account(
         mut,
+        has_one = fanout,
         close = rent_refund,
         has_one = rent_refund,
     )]
