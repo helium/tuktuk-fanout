@@ -1,0 +1,28 @@
+---
+description: Anchor code structure
+globs: programs/**/*.rs
+---
+
+# Structure
+
+Anchor code should be organized into the structure of the following:
+
+- src
+  - lib.rs
+  - instructions
+    - mod.rs
+    - some_instruction_v0.rs
+  - error.rs
+  - state.rs
+
+You can see an example endpoint at [initialize_account_windowed_breaker_v0.rs](mdc:programs/circuit-breaker/src/instructions/initialize_account_windowed_breaker_v0.rs)
+
+All instructions should have a versioned Args struct, versions accounts context, and a handler. They should then be included in lib.rs similar to [lib.rs](mdc:programs/circuit-breaker/src/lib.rs)
+
+# Accounts Validation
+
+All accounts that can be verified via has_one should be verified by has_one. Any account present in the seeds = [...] should _not_ be verified via has_one.
+
+# Token Accounts
+
+All token accounts should be init_if_needed as associated token accounts via associated_token::mint and associated_token::owner

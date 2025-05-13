@@ -1,0 +1,43 @@
+[features]
+seeds = true
+docs = false
+
+[programs.localnet]
+wallet_fanout = "fanqeMu3fw8R4LwKNbahPtYXJsyLL6NXyfe2BqzhfB6"
+
+[workspace]
+members = [
+  "programs/wallet-fanout",
+]
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "yarn run ts-mocha -p ./tsconfig.test.json -t 1000000 tests/**/*.ts"
+
+[test]
+startup_wait = 20000
+
+[test.validator]
+url = "https://api.mainnet-beta.solana.com"
+
+[[test.validator.clone]]
+address = "tuktukUrfhXT6ZT77QTU8RQtvgL967uRuVagWF57zVA" # tuktuk
+
+[[test.validator.clone]]
+address = "GkUxZMcw2RbwZ64VL3MvBtYNV8zim3y7UfzabFTybAUJ" # tuktuk-idl
+
+[[test.validator.clone]]
+address = "cronAjRZnJn3MTP3B9kE62NWDrjSuAPVXf9c4hu4grM" # cron
+
+[[test.validator.clone]]
+address = "EiFi2BQZaNbG3HFdVaU82web2GqXaq9vepobNNgzMHPb" # cron-idl
+
+[[test.validator.clone]]
+address = "HGBovqKte26DbEMBma3T1TvvdmAFYSSgjncRoKECqfXq" # tuktuk config
+

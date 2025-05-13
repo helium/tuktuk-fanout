@@ -1,0 +1,21 @@
+[profile.release]
+overflow-checks = true
+
+[workspace]
+members = [
+  "programs/*",
+  "utils/default-env",
+]
+
+exclude = []
+
+[workspace.dependencies]
+anchor-lang = { version = "0.31.1", features = ["init-if-needed"] }
+anchor-spl = { version = "0.31.1", features = ["mint", "token", "metadata"] }
+solana-program = "2.2.1"
+solana-security-txt = "1.1.1"
+time = "0.3.36"
+tuktuk-sdk = { version = "0.3.1" }
+tuktuk-program = { version = "0.3.0" }
+solana-zk-sdk = "2.2.3"
+default-env = { path = "./utils/default-env" }

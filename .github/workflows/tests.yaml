@@ -1,0 +1,113 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+      - develop
+env:
+  SOLANA_CLI_VERSION: 2.1.6
+  NODE_VERSION: 18.12.1
+
+jobs:
+  test-rust-lint:
+    name: Test Rust Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup/
+      - uses: actions/cache@v4
+        name: Cache Cargo registry + index
+        id: cache-cargo-build
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+          key: cargo-${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+      - run: cargo build --locked
+      - run: cargo fmt -- --check
+      - run: cargo clippy --all-targets -- -D warnings -A clippy::result_large_err -A clippy::too_many_arguments -A clippy::uninlined-format-args -A ambiguous_glob_reexports -A unexpected-cfgs
+
+  test-unit:
+    name: Rust Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup/
+      - uses: actions/cache@v4
+        name: Cache Cargo registry + index
+        id: cache-cargo-build
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+          key: cargo-${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+      - run: cargo build --locked
+      - run: cargo test --lib
+
+  build:
+    name: Build Anchor
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/build-anchor/
+        with:
+          testing: true
+
+  test-devflow:
+    needs: build
+    name: Test Development Workflow
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/build-anchor/
+        with:
+          testing: true
+      - uses: ./.github/actions/setup-ts/
+      - name: Start Anchor Localnet
+        run: ~/.cargo/bin/anchor localnet --skip-build --provider.wallet ~/.config/solana/id.json & sleep 2
+      - name: Wait for localnet to start
+        run: |
+          while [[ "$(curl -s http://localhost:8899/health)" != "ok" ]]; do
+            echo "Waiting for local Anchor network to start..."
+            sleep 5
+          done
+      - name: Run bootstrap script
+        run: ./scripts/bootstrap.sh
+
+
+  test-contracts:
+    needs: build
+    name: Test Anchor Contracts
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test:
+          - tests/wallet-fanout.ts
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/build-anchor/
+        with:
+          testing: true
+      - uses: ./.github/actions/setup-ts/
+      - name: Start Anchor Localnet
+        run: ~/.cargo/bin/anchor localnet --skip-build --provider.wallet ~/.config/solana/id.json & sleep 2
+      - name: Wait for localnet to start
+        run: |
+          while [[ "$(curl -s http://localhost:8899/health)" != "ok" ]]; do
+            echo "Waiting for local Anchor network to start..."
+            sleep 5
+          done
+      - run: ANCHOR_WALLET=${HOME}/.config/solana/id.json yarn run ts-mocha -p ./tsconfig.test.json -t 1000000 --exit $TEST
+        env:
+          TESTING: true
+          TEST: ${{ matrix.test }}
+          ANCHOR_PROVIDER_URL: http://localhost:8899
