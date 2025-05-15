@@ -3,7 +3,7 @@ seeds = true
 docs = false
 
 [programs.localnet]
-wallet_fanout = "fanqeMu3fw8R4LwKNbahPtYXJsyLL6NXyfe2BqzhfB6"
+wallet_fanout = "fanCjX4iwbn41FSuZSvoSdro2XjUKuWyZFbegnqtmTX"
 
 [workspace]
 members = [

@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 #[cfg(not(feature = "no-entrypoint"))]
 use {default_env::default_env, solana_security_txt::security_txt};
 
-declare_id!("fanqeMu3fw8R4LwKNbahPtYXJsyLL6NXyfe2BqzhfB6");
+declare_id!("fanCjX4iwbn41FSuZSvoSdro2XjUKuWyZFbegnqtmTX");
 
 pub mod errors;
 pub mod instructions;
@@ -71,5 +71,12 @@ pub mod wallet_fanout {
 
   pub fn close_fanout_v0(ctx: Context<CloseFanoutV0>) -> Result<()> {
     instructions::close_fanout_v0::handler(ctx)
+  }
+
+  pub fn requeue_fanout_task_v0(
+    ctx: Context<RequeueFanoutTaskV0>,
+    args: RequeueFanoutTaskArgsV0,
+  ) -> Result<()> {
+    instructions::requeue_fanout_task_v0::handler(ctx, args)
   }
 }

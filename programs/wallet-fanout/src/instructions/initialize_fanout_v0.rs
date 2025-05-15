@@ -98,7 +98,7 @@ pub fn handler(ctx: Context<InitializeFanoutV0>, args: InitializeFanoutV0Args) -
     total_shares: args.total_shares,
     next_share_id: 0,
     next_cron_transaction_id: 0,
-    available_cron_transaction_ides: vec![],
+    available_cron_transaction_ids: vec![],
     total_shares_issued: 0,
     num_inflows: 0,
   });

@@ -33,11 +33,12 @@
   "dependencies": {
     "@coral-xyz/anchor": "^0.31.0",
     "@coral-xyz/borsh": "^0.2.6",
-    "@helium/cron-sdk": "^0.0.8",
+    "@helium/cron-sdk": "^0.0.9",
     "@helium/spl-utils": "^0.10.13",
-    "@helium/tuktuk-idls": "^0.0.8",
-    "@helium/tuktuk-sdk": "^0.0.8",
+    "@helium/tuktuk-idls": "^0.0.9",
+    "@helium/tuktuk-sdk": "^0.0.9",
     "@solana/spl-token": "^0.4.8",
+    "@solana/wallet-adapter-react": "^0.15.38",
     "@solana/web3.js": "^1.95.2",
     "lerna": "^5.5.4",
     "long": "^5.2.1"

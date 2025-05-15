@@ -1,0 +1,41 @@
+"use client";
+
+import { WalletButton } from "@/components/WalletButton";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { CreateFanout } from "@/components/CreateFanout";
+import { FanoutList } from "@/components/FanoutList";
+import { useAuthorityFanouts } from "@/hooks/useAuthorityFanouts";
+
+export function MainContent() {
+  const { publicKey } = useWallet();
+  const { fanouts, loading, refresh } = useAuthorityFanouts();
+
+  return (
+    <>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Fanout Manager</h1>
+        <WalletButton />
+      </div>
+
+      {publicKey ? (
+        <div className="space-y-8">
+          <div className="bg-gray-800 rounded-xl shadow-lg p-8">
+            <h2 className="text-2xl font-bold mb-6">Create New Fanout</h2>
+            <CreateFanout refresh={refresh} />
+          </div>
+
+          <div className="bg-gray-800 rounded-xl shadow-lg p-8">
+            <h2 className="text-2xl font-bold mb-6">Your Fanouts</h2>
+            <FanoutList fanouts={fanouts} loading={loading} />
+          </div>
+        </div>
+      ) : (
+        <div className="text-center mt-20">
+          <h2 className="text-2xl font-bold text-gray-300">
+            Connect your wallet to continue
+          </h2>
+        </div>
+      )}
+    </>
+  );
+}

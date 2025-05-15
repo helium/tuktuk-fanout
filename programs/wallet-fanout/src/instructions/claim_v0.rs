@@ -12,12 +12,8 @@ use tuktuk_program::{
       add_cron_transaction_v0, remove_cron_transaction_v0,
     },
     program::Cron,
-    types::{
-      AddCronTransactionArgsV0, CompiledInstructionV0, CompiledTransactionV0,
-      RemoveCronTransactionArgsV0,
-    },
+    types::{AddCronTransactionArgsV0, RemoveCronTransactionArgsV0},
   },
-  tuktuk,
 };
 
 use crate::{
@@ -229,22 +225,7 @@ pub fn handler(ctx: Context<ClaimV0>) -> Result<()> {
       AddCronTransactionArgsV0 {
         index: ctx.accounts.voucher.cron_transaction_id,
         transaction_source: tuktuk_program::cron::types::TransactionSourceV0::CompiledV0(
-          CompiledTransactionV0 {
-            num_rw_signers: compiled_tx.num_rw_signers,
-            num_ro_signers: compiled_tx.num_ro_signers,
-            num_rw: compiled_tx.num_rw,
-            accounts: compiled_tx.accounts,
-            instructions: compiled_tx
-              .instructions
-              .iter()
-              .map(|ix| CompiledInstructionV0 {
-                program_id_index: ix.program_id_index,
-                accounts: ix.accounts.clone(),
-                data: ix.data.clone(),
-              })
-              .collect(),
-            signer_seeds: compiled_tx.signer_seeds,
-          },
+          compiled_tx.into(),
         ),
       },
     )?;

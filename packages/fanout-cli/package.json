@@ -1,0 +1,26 @@
+{
+  "name": "@helium/fanout-cli",
+  "version": "0.0.1",
+  "description": "CLI tool for Helium Fanout",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "fanout": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.28.0",
+    "@helium/wallet-fanout-sdk": "^0.0.1",
+    "@solana/web3.js": "^1.78.4",
+    "commander": "^11.0.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.0",
+    "typescript": "^5.1.6"
+  }
+}

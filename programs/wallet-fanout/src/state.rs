@@ -31,7 +31,7 @@ pub struct FanoutV0 {
   /// Name of the fanout for identification
   pub name: String,
   /// Available cron transaction indexes that can be reused
-  pub available_cron_transaction_ides: Vec<u32>,
+  pub available_cron_transaction_ids: Vec<u32>,
   /// Bump seed for queue authority PDA derivation
   pub queue_authority_bump: u8,
   /// Number of active token inflows for this fanout
@@ -40,7 +40,7 @@ pub struct FanoutV0 {
 
 impl FanoutV0 {
   pub fn get_next_cron_transaction_id(&mut self) -> u32 {
-    if let Some(index) = self.available_cron_transaction_ides.pop() {
+    if let Some(index) = self.available_cron_transaction_ids.pop() {
       index
     } else {
       let index = self.next_cron_transaction_id;
@@ -51,19 +51,19 @@ impl FanoutV0 {
 
   pub fn return_cron_transaction_id_to_pool(&mut self, index: u32) {
     // Keep the list sorted for easier maintenance
-    match self.available_cron_transaction_ides.binary_search(&index) {
+    match self.available_cron_transaction_ids.binary_search(&index) {
       Ok(_) => return, // Already in list
-      Err(pos) => self.available_cron_transaction_ides.insert(pos, index),
+      Err(pos) => self.available_cron_transaction_ids.insert(pos, index),
     }
 
     // If we have the highest index in available list, reduce next_cron_transaction_id
     while self.next_cron_transaction_id > 0
       && self
-        .available_cron_transaction_ides
+        .available_cron_transaction_ids
         .contains(&(self.next_cron_transaction_id - 1))
     {
       self.next_cron_transaction_id -= 1;
-      self.available_cron_transaction_ides.pop();
+      self.available_cron_transaction_ids.pop();
     }
   }
 }
@@ -114,7 +114,7 @@ impl TokenInflowV0 {
 pub struct WalletShareV0 {
   /// The fanout this share belongs to
   pub fanout: Pubkey,
-  pub index: u32,
+  pub id: u32,
   /// The wallet that owns these shares
   pub wallet: Pubkey,
   /// Number of shares allocated to this wallet

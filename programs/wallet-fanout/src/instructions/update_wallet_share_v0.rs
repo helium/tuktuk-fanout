@@ -49,7 +49,7 @@ pub fn handler(ctx: Context<UpdateWalletShareV0>, args: UpdateWalletShareV0Args)
 
   // Update wallet share
   wallet_share.fanout = fanout.key();
-  wallet_share.index = fanout.next_share_id;
+  wallet_share.id = args.index;
   wallet_share.wallet = ctx.accounts.wallet.key();
   wallet_share.shares = args.shares;
   wallet_share.rent_refund = ctx.accounts.payer.key();

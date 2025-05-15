@@ -2682,9 +2682,9 @@ dependencies = [
 
 [[package]]
 name = "tuktuk-program"
-version = "0.3.1"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ac6ce2b1eecf9b784d46e26f3b77a3a77f57f02a2a2434206de0de8c12f27e86"
+checksum = "902b147e0b1c2e5510fc189c7a41a7c2b81ebb098980710ca620e58883389eef"
 dependencies = [
  "anchor-lang",
 ]

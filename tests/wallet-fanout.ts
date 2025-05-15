@@ -18,7 +18,7 @@ export async function ensureIdls() {
   let programs = [
     {
       name: "wallet_fanout",
-      pid: "fanqeMu3fw8R4LwKNbahPtYXJsyLL6NXyfe2BqzhfB6",
+      pid: "fanCjX4iwbn41FSuZSvoSdro2XjUKuWyZFbegnqtmTX",
     },
   ];
   await Promise.all(
