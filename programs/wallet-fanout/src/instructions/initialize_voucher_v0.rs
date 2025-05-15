@@ -19,7 +19,7 @@ use crate::{
 };
 
 #[derive(Accounts)]
-pub struct InitVoucherV0<'info> {
+pub struct InitializeVoucherV0<'info> {
   #[account(mut)]
   pub payer: Signer<'info>,
   #[account(
@@ -83,7 +83,7 @@ pub struct InitVoucherV0<'info> {
   pub associated_token_program: Program<'info, AssociatedToken>,
 }
 
-pub fn handler(ctx: Context<InitVoucherV0>) -> Result<()> {
+pub fn handler(ctx: Context<InitializeVoucherV0>) -> Result<()> {
   let fanout = &mut ctx.accounts.fanout;
 
   // Initialize token inflow if needed

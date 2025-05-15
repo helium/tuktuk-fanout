@@ -1,26 +1,39 @@
 "use client";
 
+import { CopyableAddress } from "@/components/CopyableAddress";
 import { CronJobStatus } from "@/components/CronJobStatus";
 import { ManageWallets } from "@/components/ManageWallets";
+import { TokenAccounts } from "@/components/TokenAccounts";
 import { WalletButton } from "@/components/WalletButton";
 import { useCronJob } from "@/hooks/useCronJob";
+import { useDeleteFanout } from "@/hooks/useDeleteFanout";
 import { useFanoutByName } from "@/hooks/useFanout";
 import { useTask } from "@/hooks/useTask";
-import { useParams, useRouter } from "next/navigation";
-import { useMemo } from "react";
-import { CopyableAddress } from "@/components/CopyableAddress";
-import { TokenAccounts } from "@/components/TokenAccounts";
 import { useTokenAccounts } from "@/hooks/useTokenAccounts";
+import { useParams, useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 
 export default function FanoutPage() {
   const params = useParams();
   const router = useRouter();
-  const { info: fanout, loading, key: fanoutKey } = useFanoutByName(params.name as string);
-  const { info: cronJob, loading: cronJobLoading, funding } = useCronJob(
-    fanout?.cronJob
-  );
+  const {
+    info: fanout,
+    loading,
+    key: fanoutKey,
+  } = useFanoutByName(params.name as string);
+  const {
+    info: cronJob,
+    loading: cronJobLoading,
+    funding,
+  } = useCronJob(fanout?.cronJob);
   const { info: task } = useTask(cronJob?.nextScheduleTask);
-  const { tokens } = useTokenAccounts(fanoutKey)
+  const { tokens } = useTokenAccounts(fanoutKey);
+  const {
+    execute: deleteFanout,
+    loading: deleteLoading,
+    error: deleteError,
+  } = useDeleteFanout(fanoutKey, tokens);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const nextRun = useMemo(() => {
     if (!task) return null;
 
@@ -32,6 +45,15 @@ export default function FanoutPage() {
     );
     return nextRunDate;
   }, [task]);
+
+  const handleDelete = async () => {
+    try {
+      await deleteFanout();
+      router.push("/");
+    } catch (error) {
+      console.error("Failed to delete fanout:", error);
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -45,8 +67,69 @@ export default function FanoutPage() {
           </button>
           <h1 className="text-3xl font-bold text-white">{params.name}</h1>
         </div>
-        <WalletButton />
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="px-4 py-3 text-red-500 hover:text-red-400 border border-red-500 hover:border-red-400 rounded-lg transition-colors cursor-pointer"
+            title="Delete Fanout"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="relative top-[1px]"
+            >
+              <path d="M3 6h18"></path>
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+            </svg>
+          </button>
+          <WalletButton />
+        </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-gray-800 rounded-xl p-6 max-w-md w-full mx-4 relative">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold text-white mb-2">
+                Delete Fanout
+              </h3>
+              <p className="text-gray-400">
+                Are you sure you want to delete this fanout? This action cannot
+                be undone.
+              </p>
+            </div>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleteLoading}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white rounded-lg transition-colors"
+              >
+                {deleteLoading ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+            {deleteError && (
+              <div className="mt-4 text-red-400 text-sm text-center">
+                {deleteError.message || "Failed to delete fanout"}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <div className="text-center py-8">
@@ -86,17 +169,33 @@ export default function FanoutPage() {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <div className="text-sm text-gray-400">Transaction Fee Funding</div>
+                  <div className="text-sm text-gray-400">
+                    Transaction Fee Funding
+                  </div>
                   <div className="group relative">
                     <div className="cursor-help text-gray-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
                         <circle cx="12" cy="12" r="10"></circle>
                         <path d="M12 16v-4"></path>
                         <path d="M12 8h.01"></path>
                       </svg>
                     </div>
                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-72 p-2 bg-gray-800 text-xs text-gray-300 rounded-lg shadow-lg">
-                      Every time the fanout activates and distributes tokens, it incurs solana transaction fees. If funding falls to 0, the fanout will stop distributing tokens. If funds are running low, copy the Transaction Funding Address and send it some SOL
+                      Every time the fanout activates and distributes tokens, it
+                      incurs solana transaction fees. If funding falls to 0, the
+                      fanout will stop distributing tokens. If funds are running
+                      low, copy the Transaction Funding Address and send it some
+                      SOL
                     </div>
                   </div>
                 </div>
@@ -116,7 +215,9 @@ export default function FanoutPage() {
               </div>
               {fanoutKey && fanout?.cronJob && (
                 <div>
-                  <div className="text-sm text-gray-400 mb-1">Transaction Funding Address</div>
+                  <div className="text-sm text-gray-400 mb-1">
+                    Transaction Funding Address
+                  </div>
                   <CopyableAddress address={fanout.cronJob.toBase58()} />
                 </div>
               )}

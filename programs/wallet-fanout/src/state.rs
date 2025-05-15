@@ -97,7 +97,7 @@ impl TokenInflowV0 {
       .checked_mul(shares_diff as u128)
       .unwrap()
       .checked_div(tsi as u128)
-      .unwrap();
+      .unwrap_or_default();
     self.total_inflow = self
       .total_inflow
       .checked_add(new_inflow)

@@ -2,10 +2,11 @@ import { useConnection } from "@solana/wallet-adapter-react"
 import { PublicKey } from "@solana/web3.js"
 import { useCallback, useEffect, useState } from "react"
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token"
+import BN from "bn.js"
 
 export type TokenInfo = {
   mint: PublicKey
-  balance: number
+  balance: BN
   decimals: number
   symbol: string
 }
@@ -30,7 +31,7 @@ export function useTokenAccounts(owner?: PublicKey) {
         const parsedInfo = ta.account.data.parsed.info
         return {
           mint: new PublicKey(parsedInfo.mint),
-          balance: Number(parsedInfo.tokenAmount.amount),
+          balance: new BN(parsedInfo.tokenAmount.amount),
           decimals: parsedInfo.tokenAmount.decimals,
           symbol: parsedInfo.symbol || 'Unknown'
         }

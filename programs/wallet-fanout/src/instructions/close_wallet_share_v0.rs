@@ -5,6 +5,7 @@ use crate::state::{FanoutV0, WalletShareV0};
 #[derive(Accounts)]
 pub struct CloseWalletShareV0<'info> {
   #[account(
+    mut,
     has_one = authority
   )]
   pub fanout: Account<'info, FanoutV0>,
@@ -22,6 +23,11 @@ pub struct CloseWalletShareV0<'info> {
   pub rent_refund: AccountInfo<'info>,
 }
 
-pub fn handler(_ctx: Context<CloseWalletShareV0>) -> Result<()> {
+pub fn handler(ctx: Context<CloseWalletShareV0>) -> Result<()> {
+  let fanout = &mut ctx.accounts.fanout;
+  fanout.total_shares_issued = fanout
+    .total_shares_issued
+    .checked_sub(ctx.accounts.wallet_share.shares)
+    .unwrap();
   Ok(())
 }

@@ -10,4 +10,6 @@ pub enum ErrorCode {
   RewardsNotClaimed,
   #[msg("Cannot close fanout with active inflows")]
   CannotCloseFanoutWithInflows,
+  #[msg("Total shares issued exceeded total shares")]
+  TotalSharesExceeded,
 }

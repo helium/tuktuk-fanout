@@ -49,8 +49,8 @@ pub mod wallet_fanout {
     instructions::update_wallet_share_v0::handler(ctx, args)
   }
 
-  pub fn init_voucher_v0(ctx: Context<InitVoucherV0>) -> Result<()> {
-    instructions::init_voucher_v0::handler(ctx)
+  pub fn initialize_voucher_v0(ctx: Context<InitializeVoucherV0>) -> Result<()> {
+    instructions::initialize_voucher_v0::handler(ctx)
   }
 
   pub fn claim_v0(ctx: Context<ClaimV0>) -> Result<()> {

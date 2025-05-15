@@ -9,6 +9,9 @@ import { useAnchorAccount } from '@helium/helium-react-hooks'
 import { WalletFanout } from '@helium/fanout-idls/lib/types/wallet_fanout'
 import { tokenInflowKey } from '@helium/wallet-fanout-sdk'
 import { IdlAccounts } from '@coral-xyz/anchor'
+import { useClaimAll } from '@/hooks/useClaimAll'
+import { humanReadable } from '@helium/spl-utils'
+import { BN } from 'bn.js'
 
 function isValidUrl(urlString: string) {
   try {
@@ -21,7 +24,7 @@ function isValidUrl(urlString: string) {
 
 export interface TokenAccountCardProps {
   mint: PublicKey
-  balance: number
+  balance: InstanceType<typeof BN>
   decimals: number
   fanout: PublicKey
   inflow?: IdlAccounts<WalletFanout>['tokenInflowV0']
@@ -49,7 +52,7 @@ export function TokenAccountCard({ mint, balance, decimals, fanout, inflow: exis
   const tokenSymbol = json?.symbol || metadata?.data?.symbol || '???'
   const rawImageUrl = (json?.image || metadata?.data?.uri || '').trim()
   const imageUrl = isValidUrl(rawImageUrl) ? rawImageUrl : ''
-  const formattedBalance = (balance / Math.pow(10, decimals)).toFixed(decimals)
+  const formattedBalance = humanReadable(balance, decimals)
 
   const handleEnableFanout = async () => {
     await createVouchers({ mint })
@@ -106,6 +109,7 @@ export function TokenAccountCard({ mint, balance, decimals, fanout, inflow: exis
 
 export function TokenAccounts({ fanout }: { fanout?: PublicKey }) {
   const { tokens, loading, refresh } = useTokenAccounts(fanout)
+  const { execute: claimAll, loading: claimLoading, error: claimError, needsClaim } = useClaimAll(fanout, tokens)
 
   if (!fanout || loading) {
     return <div className="text-gray-400">Loading token accounts...</div>
@@ -143,15 +147,31 @@ export function TokenAccounts({ fanout }: { fanout?: PublicKey }) {
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold text-white">Token Accounts</h2>
-        <button
-          onClick={refresh}
-          className="text-gray-400 hover:text-white transition-colors"
-          title="Refresh token accounts"
-          disabled={loading}
-        >
-          <RefreshIcon className={loading ? 'animate-spin' : ''} />
-        </button>
+        <div className="flex items-center gap-4">
+          {needsClaim && (
+            <button
+              onClick={() => claimAll()}
+              disabled={claimLoading || loading}
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-sm cursor-pointer"
+          >
+              {claimLoading ? 'Claiming...' : 'Claim All'}
+            </button>
+          )}
+          <button
+            onClick={refresh}
+            className="text-gray-400 hover:text-white transition-colors"
+            title="Refresh token accounts"
+            disabled={loading}
+          >
+            <RefreshIcon className={loading ? 'animate-spin' : ''} />
+          </button>
+        </div>
       </div>
+      {claimError && (
+        <div className="bg-red-900/50 border border-red-500 text-red-300 px-4 py-2 rounded-lg mb-4">
+          {claimError.message}
+        </div>
+      )}
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {tokens.map((token) => (
           <TokenAccountCard

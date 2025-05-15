@@ -1,6 +1,6 @@
 import { cronJobTransactionKey, PROGRAM_ID as CRON_PROGRAM_ID } from '@helium/cron-sdk'
 import { useAnchorProvider } from '@helium/helium-react-hooks'
-import { batchInstructionsToTxsWithPriorityFee, batchParallelInstructionsWithPriorityFee, bulkSendTransactions } from '@helium/spl-utils'
+import { batchInstructionsToTxsWithPriorityFee, batchSequentialParallelInstructions, bulkSendTransactions } from '@helium/spl-utils'
 import { init as initFanout, queueAuthorityKey, tokenInflowKey, voucherKey, walletShareKey } from '@helium/wallet-fanout-sdk'
 import { PublicKey, SystemProgram, TransactionInstruction } from '@solana/web3.js'
 import { useCallback } from 'react'
@@ -53,7 +53,7 @@ export const useUpdateWallet = (fanout: PublicKey | undefined) => {
       const walletShare = walletShareKey(fanout, index)[0]
       for (const inflow of inflowAccounts) {
         if (inflow) {
-          instructions.push(await program.methods.initVoucherV0().accountsStrict({
+          instructions.push(await program.methods.initializeVoucherV0().accountsStrict({
             cronJobTransaction: cronJobTransactionKey(fanoutInfo.cronJob, getNextCronTransactionId())[0],
             mint: inflow.mint,
             walletShare: walletShare,
@@ -125,14 +125,11 @@ export const useRemoveWallet = (fanout: PublicKey | undefined) => {
         .instruction()
 
       // Ensure vouchers are all closed first
-      await batchParallelInstructionsWithPriorityFee(
+      await batchSequentialParallelInstructions({
         provider,
-        voucherCloseInstructions
-      )
-      await batchParallelInstructionsWithPriorityFee(
-        provider,
-        [closeWalletShareInstruction],
-      )
+        instructions: [[closeWalletShareInstruction], voucherCloseInstructions],
+      })
+
     }, [fanoutInfo, fanout, provider])
   )
 }

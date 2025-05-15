@@ -8,38 +8,17 @@ import { PublicKey, SystemProgram, TransactionInstruction } from '@solana/web3.j
 import { useMemo } from 'react'
 import { useAsyncCallback } from 'react-async-hook'
 import { useFanout } from './useFanout'
-import { useTokenInflows } from './useInflow'
+import { useTokenInflows, useInflowKeys } from './useInflow'
 import { type TokenInfo } from './useTokenAccounts'
-import { useVouchers } from './useVoucher'
+import { useVouchers, useVoucherKeys } from './useVoucher'
 import { useWalletShares } from './useWalletShares'
 
 export const useCreateMissingVouchers = (fanout: PublicKey | undefined, tokens: TokenInfo[] = []) => {
   const { info: fanoutInfo } = useFanout(fanout)
   const { accounts: shares } = useWalletShares(fanout)
-  
-  // Get all inflow keys for all tokens
-  const inflowKeys = useMemo(() => {
-    if (!fanout || !tokens) return []
-    return tokens.map(token => tokenInflowKey(fanout, token.mint)[0])
-  }, [fanout, tokens])
-
+  const inflowKeys = useInflowKeys(fanout, tokens)
   const { accounts: inflows } = useTokenInflows(inflowKeys)
-
-  // Get all voucher keys for all shares and inflows
-  const voucherKeys = useMemo(() => {
-    if (!fanout || !shares || !inflows) return []
-    const keys: PublicKey[] = []
-    
-    shares.forEach(share => {
-      if (!share.info) return
-      inflows.forEach(inflow => {
-        if (!inflow.info) return
-        keys.push(voucherKey(fanout, inflow.info.mint, share.publicKey)[0])
-      })
-    })
-    return keys
-  }, [fanout, shares, inflows])
-
+  const voucherKeys = useVoucherKeys(fanout, shares, inflows)
   const { accounts: vouchers } = useVouchers(voucherKeys)
 
   // Check if there are any missing vouchers
@@ -85,7 +64,7 @@ export const useCreateMissingVouchers = (fanout: PublicKey | undefined, tokens: 
           const existingVoucher = vouchers?.find(v => v.publicKey.equals(voucherAddr))
 
           if (!existingVoucher?.info) {
-            instructions.push(await program.methods.initVoucherV0().accountsStrict({
+            instructions.push(await program.methods.inititalizeVoucherV0().accountsStrict({
               cronJobTransaction: cronJobTransactionKey(fanoutInfo.cronJob, getNextCronTransactionId())[0],
               mint: inflow.info.mint,
               walletShare: walletShare,

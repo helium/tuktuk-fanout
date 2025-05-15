@@ -55,7 +55,7 @@ export const useCreateVouchers = (fanoutKey: PublicKey) => {
       if (share.info) {
         const currentCronTransactionId = getNextCronTransactionId()
         instructions.push(
-          await program.methods.initVoucherV0()
+          await program.methods.initializeVoucherV0()
             .accountsStrict({
               cronJobTransaction: cronJobTransactionKey(fanout.cronJob, currentCronTransactionId)[0],
               mint: params.mint,

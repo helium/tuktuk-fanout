@@ -10,7 +10,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { LAMPORTS_PER_SOL, PublicKey, SystemProgram } from '@solana/web3.js'
 import { useAsyncCallback } from 'react-async-hook'
 
-export const INITIAL_FUNDING = 0.01
+export const INITIAL_FUNDING = 0.02
 
 export const useCreateFanout = () => {
   const provider = useAnchorProvider()

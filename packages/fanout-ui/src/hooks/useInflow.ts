@@ -4,6 +4,7 @@ import { useAnchorAccount, useAnchorAccounts } from '@helium/helium-react-hooks'
 import { tokenInflowKey } from '@helium/wallet-fanout-sdk'
 import { PublicKey } from '@solana/web3.js'
 import { useMemo } from 'react'
+import { type TokenInfo } from './useTokenAccounts'
 
 export type TokenInflowV0 = IdlAccounts<WalletFanout>["tokenInflowV0"]
 
@@ -12,6 +13,13 @@ export const useTokenInflow = (tokenInflowKey: PublicKey | undefined) =>
 
 export const useTokenInflows = (tokenInflowKeys: PublicKey[] | undefined) =>
   useAnchorAccounts<WalletFanout, 'tokenInflowV0'>(tokenInflowKeys, 'tokenInflowV0')
+
+export const useInflowKeys = (fanout: PublicKey | undefined, tokens: TokenInfo[] = []) => {
+  return useMemo(() => {
+    if (!fanout || !tokens) return []
+    return tokens.map(token => tokenInflowKey(fanout, token.mint)[0])
+  }, [fanout, tokens])
+}
 
 export const useTokenInflowKey = ({ fanoutKey, mint }: { fanoutKey?: PublicKey, mint?: PublicKey }) => {
   return useMemo(() => {
