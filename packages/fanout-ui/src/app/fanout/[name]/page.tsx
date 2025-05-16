@@ -16,11 +16,12 @@ import { useMemo, useState } from "react";
 export default function FanoutPage() {
   const params = useParams();
   const router = useRouter();
+  const decodedName = decodeURIComponent(params.name as string);
   const {
     info: fanout,
     loading,
     key: fanoutKey,
-  } = useFanoutByName(params.name as string);
+  } = useFanoutByName(decodedName);
   const {
     info: cronJob,
     loading: cronJobLoading,
@@ -65,7 +66,7 @@ export default function FanoutPage() {
           >
             ← Back to list
           </button>
-          <h1 className="text-3xl font-bold text-white">{params.name}</h1>
+          <h1 className="text-3xl font-bold text-white">{decodedName}</h1>
         </div>
         <div className="flex items-center gap-4">
           <button
@@ -168,44 +169,13 @@ export default function FanoutPage() {
                 )}
               </div>
               <div>
-                <div className="flex items-center gap-2">
-                  <div className="text-sm text-gray-400">
-                    Transaction Fee Funding
-                  </div>
-                  <div className="group relative">
-                    <div className="cursor-help text-gray-400">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M12 16v-4"></path>
-                        <path d="M12 8h.01"></path>
-                      </svg>
-                    </div>
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-72 p-2 bg-gray-800 text-xs text-gray-300 rounded-lg shadow-lg">
-                      Every time the fanout activates and distributes tokens, it
-                      incurs solana transaction fees. If funding falls to 0, the
-                      fanout will stop distributing tokens. If funds are running
-                      low, copy the Transaction Funding Address and send it some
-                      SOL
-                    </div>
-                  </div>
-                </div>
+                <div className="text-sm text-gray-400">Funding</div>
                 <div className="text-xl text-white">
-                  {cronJobLoading ? "..." : funding.toFixed(8)} SOL
+                  {funding.toFixed(4)} SOL
                 </div>
               </div>
             </div>
 
-            {/* Addresses Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
               <div>
                 <div className="text-sm text-gray-400 mb-1">Wallet Address</div>
@@ -230,7 +200,7 @@ export default function FanoutPage() {
 
             {fanoutKey && <CronJobStatus fanoutKey={fanoutKey} />}
 
-            <ManageWallets fanoutName={params.name as string} tokens={tokens} />
+            <ManageWallets fanoutName={decodedName} tokens={tokens} />
           </div>
         </div>
       ) : (

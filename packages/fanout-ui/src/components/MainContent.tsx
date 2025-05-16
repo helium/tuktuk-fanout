@@ -5,6 +5,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { CreateFanout } from "@/components/CreateFanout";
 import { FanoutList } from "@/components/FanoutList";
 import { useAuthorityFanouts } from "@/hooks/useAuthorityFanouts";
+import { FanoutIllustration } from "@/components/FanoutIllustration";
 
 export function MainContent() {
   const { publicKey } = useWallet();
@@ -13,12 +14,16 @@ export function MainContent() {
   return (
     <>
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Fanout Manager</h1>
+        <h1 className="text-3xl font-bold">Tuktuk Fanout</h1>
         <WalletButton />
       </div>
 
       {publicKey ? (
         <div className="space-y-8">
+          <div className="flex justify-center items-center">
+            <FanoutIllustration />
+          </div>
+
           <div className="bg-gray-800 rounded-xl shadow-lg p-8">
             <h2 className="text-2xl font-bold mb-6">Create New Fanout</h2>
             <CreateFanout refresh={refresh} />

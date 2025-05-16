@@ -40,6 +40,12 @@ export const useCreateFanout = () => {
     const taskQueueAcc = await tuktukProgram.account.taskQueueV0.fetch(taskQueue)
     const nextTask = nextAvailableTaskIds(taskQueueAcc.taskBitmap, 1, false)[0]
     const cronJobK = cronJobKey(queueAuthority, cronJobId)[0]
+    const fanout = fanoutKey(params.name)[0]
+
+    const fanoutAcc = await program.account.fanoutV0.fetchNullable(fanout)
+    if (fanoutAcc) {
+      throw new Error(`Fanout with name "${params.name}" already exists`)
+    }
 
     const ix = await program.methods.initializeFanoutV0({
       name: params.name,
@@ -49,7 +55,7 @@ export const useCreateFanout = () => {
       .accounts({
         payer: publicKey,
         authority: publicKey,
-        fanout: fanoutKey(params.name)[0],
+        fanout,
         cronJob: cronJobK,
         userCronJobs: userCronJobsK,
         cronJobNameMapping: cronJobNameMappingKey(queueAuthority, params.name)[0],

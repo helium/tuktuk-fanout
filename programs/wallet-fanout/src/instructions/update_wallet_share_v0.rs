@@ -47,9 +47,9 @@ pub fn handler(ctx: Context<UpdateWalletShareV0>, args: UpdateWalletShareV0Args)
     .unwrap();
   fanout.total_shares_issued = fanout.total_shares_issued.checked_add(args.shares).unwrap();
 
-  require_gt!(
-    fanout.total_shares_issued,
+  require_gte!(
     fanout.total_shares,
+    fanout.total_shares_issued,
     crate::errors::ErrorCode::TotalSharesExceeded
   );
 

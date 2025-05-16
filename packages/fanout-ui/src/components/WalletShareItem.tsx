@@ -104,7 +104,7 @@ export function WalletShareItem({
                 disabled={loading}
                 className="text-red-400 hover:text-red-300 disabled:opacity-50 cursor-pointer"
               >
-                {loading ? "Removing..." : "Remove"}
+                {loading ? "Loading..." : "Remove"}
               </button>
             </div>
           </>
