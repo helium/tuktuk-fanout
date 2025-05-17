@@ -14,17 +14,18 @@
     "release:canary": "git stash && lerna publish --canary --preid next --dist-tag next --force-publish='*' --no-push --no-git-tag-version --no-verify-access --yes",
     "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",
     "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check",
-    "build": "lerna run --parallel prebuild && tsc --build && yarn generate-idl-docs",
+    "build": "lerna run --parallel prebuild && tsc --build",
     "watch": "lerna run --parallel prebuild && tsc --build --watch",
     "clean": "npx shx rm -rf {.,packages/*}/{node_modules,lib,dist}",
     "fmt": "cargo fmt --check",
     "clippy": "cargo clippy --all-targets -- -D warnings -A clippy::result_large_err -A clippy::too_many_arguments -A clippy::unexpected-cfgs",
-    "generate-idl-docs": "ts-node -T scripts/generate-idl-docs.ts",
-    "heroku-postbuild": "npm run build -w hpl-docs",
-    "docs-dev": "yarn workspace hpl-docs dev"
+    "heroku-postbuild": "cd packages/fanout-ui && yarn install && yarn build",
+    "fanout-ui-dev": "yarn workspace fanout-ui dev"
   },
   "workspaces": [
-    "packages/*"
+    "packages/fanout-idls",
+    "packages/wallet-fanout-sdk",
+    "packages/fanout-cli"
   ],
   "pre-commit": [
     "fmt"
@@ -37,6 +38,7 @@
     "@helium/spl-utils": "^0.10.13",
     "@helium/tuktuk-idls": "^0.0.9",
     "@helium/tuktuk-sdk": "^0.0.9",
+    "@helium/wallet-fanout-sdk": "^0.0.2",
     "@solana/spl-token": "^0.4.8",
     "@solana/wallet-adapter-react": "^0.15.38",
     "@solana/web3.js": "^1.95.2",

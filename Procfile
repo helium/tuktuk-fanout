@@ -1,1 +1,1 @@
-web: yarn workspace hpl-docs start
+web: cd packages/fanout-ui && yarn start

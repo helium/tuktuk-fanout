@@ -1,6 +1,6 @@
 {
   "name": "@helium/fanout-idls",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Exported fanout idls",
   "publishConfig": {
     "access": "public",
@@ -36,5 +36,5 @@
     "ts-loader": "^9.2.3",
     "typescript": "^5.2.2"
   },
-  "gitHead": "fc5dab2875863281ec468cf4a5a416c9696d102f"
+  "gitHead": "fc51ac959767aed776bdcc276bb72570ef2f6439"
 }
