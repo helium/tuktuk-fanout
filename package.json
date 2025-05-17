@@ -19,7 +19,7 @@
     "clean": "npx shx rm -rf {.,packages/*}/{node_modules,lib,dist}",
     "fmt": "cargo fmt --check",
     "clippy": "cargo clippy --all-targets -- -D warnings -A clippy::result_large_err -A clippy::too_many_arguments -A clippy::unexpected-cfgs",
-    "heroku-postbuild": "yarn workspace fanout-ui build",
+    "heroku-postbuild": "yarn build && yarn workspace fanout-ui build",
     "fanout-ui-dev": "yarn workspace fanout-ui dev"
   },
   "workspaces": [
