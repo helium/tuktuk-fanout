@@ -1,13 +1,4 @@
 {
-  "name": "fanout-ui",
-  "version": "0.0.2",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
   "dependencies": {
     "@coral-xyz/anchor": "^0.31.0",
     "@coral-xyz/borsh": "^0.2.6",
@@ -19,6 +10,7 @@
     "@helium/spl-utils": "^0.10.13",
     "@helium/tuktuk-idls": "^0.0.9",
     "@helium/tuktuk-sdk": "^0.0.9",
+    "@helium/wallet-fanout-sdk": "^0.0.2",
     "@metaplex-foundation/mpl-token-metadata": "2.10.0",
     "@solana/spl-token": "^0.4.8",
     "@solana/wallet-adapter-react-ui": "^0.9.38",
@@ -40,5 +32,14 @@
     "eslint-config-next": "15.3.2",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "name": "fanout-ui",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "lint": "next lint",
+    "start": "next start"
+  },
+  "version": "0.0.2"
 }

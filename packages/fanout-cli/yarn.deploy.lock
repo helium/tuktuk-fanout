@@ -196,7 +196,6 @@ __metadata:
     "@helium/anchor-resolvers": ^0.10.6
     "@helium/idls": ^0.10.6
     "@helium/spl-utils": ^0.10.6
-    "@helium/wallet-fanout-sdk": ^0.0.2
     bn.js: ^5.2.0
     bs58: ^4.0.1
     git-format-staged: ^2.1.3

@@ -137,7 +137,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@helium/wallet-fanout-sdk@^0.0.2, @helium/wallet-fanout-sdk@workspace:.":
+"@helium/wallet-fanout-sdk@workspace:.":
   version: 0.0.0-use.local
   resolution: "@helium/wallet-fanout-sdk@workspace:."
   dependencies:
@@ -145,7 +145,6 @@ __metadata:
     "@helium/anchor-resolvers": ^0.10.6
     "@helium/idls": ^0.10.6
     "@helium/spl-utils": ^0.10.6
-    "@helium/wallet-fanout-sdk": ^0.0.2
     bn.js: ^5.2.0
     bs58: ^4.0.1
     git-format-staged: ^2.1.3
