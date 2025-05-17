@@ -1,6 +1,6 @@
 {
   "name": "fanout-ui",
-  "version": "0.1.0",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -14,7 +14,7 @@
     "@helium/account-fetch-cache": "^0.10.13",
     "@helium/account-fetch-cache-hooks": "^0.10.13",
     "@helium/cron-sdk": "^0.0.9",
-    "@helium/fanout-idls": "^0.0.1",
+    "@helium/fanout-idls": "^0.0.2",
     "@helium/helium-react-hooks": "^0.10.13",
     "@helium/spl-utils": "^0.10.13",
     "@helium/tuktuk-idls": "^0.0.9",
