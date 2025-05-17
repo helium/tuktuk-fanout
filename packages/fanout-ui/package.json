@@ -10,7 +10,7 @@
     "@helium/spl-utils": "^0.10.13",
     "@helium/tuktuk-idls": "^0.0.9",
     "@helium/tuktuk-sdk": "^0.0.9",
-    "@helium/wallet-fanout-sdk": "^0.0.2",
+    "@helium/wallet-fanout-sdk": "=0.0.2",
     "@metaplex-foundation/mpl-token-metadata": "2.10.0",
     "@solana/spl-token": "^0.4.8",
     "@solana/wallet-adapter-react-ui": "^0.9.38",

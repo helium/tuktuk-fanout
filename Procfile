@@ -1,1 +1,1 @@
-web: yarn workspace fanout-ui start
+web: cd packages/fanout-ui && yarn start
