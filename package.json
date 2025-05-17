@@ -14,12 +14,11 @@
     "release:canary": "git stash && lerna publish --canary --preid next --dist-tag next --force-publish='*' --no-push --no-git-tag-version --no-verify-access --yes",
     "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",
     "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check",
-    "build": "lerna run --parallel prebuild && tsc --build && yarn generate-idl-docs",
+    "build": "lerna run --parallel prebuild && tsc --build",
     "watch": "lerna run --parallel prebuild && tsc --build --watch",
     "clean": "npx shx rm -rf {.,packages/*}/{node_modules,lib,dist}",
     "fmt": "cargo fmt --check",
     "clippy": "cargo clippy --all-targets -- -D warnings -A clippy::result_large_err -A clippy::too_many_arguments -A clippy::unexpected-cfgs",
-    "generate-idl-docs": "ts-node -T scripts/generate-idl-docs.ts",
     "heroku-postbuild": "npm run build -w fanout-ui",
     "fanout-ui-dev": "yarn workspace fanout-ui dev"
   },
