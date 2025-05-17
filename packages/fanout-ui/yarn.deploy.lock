@@ -265,7 +265,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@helium/fanout-idls@^0.0.1":
+"@helium/fanout-idls@^0.0.2":
   version: 0.0.0-use.local
   resolution: "@helium/fanout-idls@workspace:packages/fanout-idls"
   dependencies:
@@ -3645,7 +3645,7 @@ __metadata:
     "@helium/account-fetch-cache": ^0.10.13
     "@helium/account-fetch-cache-hooks": ^0.10.13
     "@helium/cron-sdk": ^0.0.9
-    "@helium/fanout-idls": ^0.0.1
+    "@helium/fanout-idls": ^0.0.2
     "@helium/helium-react-hooks": ^0.10.13
     "@helium/spl-utils": ^0.10.13
     "@helium/tuktuk-idls": ^0.0.9

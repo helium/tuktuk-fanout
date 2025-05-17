@@ -144,7 +144,7 @@ __metadata:
   resolution: "@helium/fanout-cli@workspace:."
   dependencies:
     "@coral-xyz/anchor": ^0.28.0
-    "@helium/wallet-fanout-sdk": ^0.0.1
+    "@helium/wallet-fanout-sdk": ^0.0.2
     "@solana/web3.js": ^1.78.4
     "@types/node": ^20.5.0
     commander: ^11.0.0
@@ -188,7 +188,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@helium/wallet-fanout-sdk@^0.0.1":
+"@helium/wallet-fanout-sdk@^0.0.2":
   version: 0.0.0-use.local
   resolution: "@helium/wallet-fanout-sdk@workspace:packages/wallet-fanout-sdk"
   dependencies:
@@ -196,6 +196,7 @@ __metadata:
     "@helium/anchor-resolvers": ^0.10.6
     "@helium/idls": ^0.10.6
     "@helium/spl-utils": ^0.10.6
+    "@helium/wallet-fanout-sdk": ^0.0.2
     bn.js: ^5.2.0
     bs58: ^4.0.1
     git-format-staged: ^2.1.3

@@ -1,48 +1,49 @@
 {
-  "name": "@helium/wallet-fanout-sdk",
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
-  "license": "Apache-2.0",
-  "version": "0.0.2",
-  "description": "Interface to the wallet fanout smart contract",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/helium/tuktuk-fanout"
-  },
-  "main": "./lib/cjs/index.js",
-  "module": "./lib/esm/src/index.js",
-  "types": "./lib/types/src/index.d.ts",
-  "sideEffects": false,
-  "files": [
-    "lib"
-  ],
-  "exports": {
-    "import": "./lib/esm/src/index.js",
-    "require": "./lib/cjs/index.js",
-    "types": "./lib/types/src/index.d.ts"
-  },
-  "scripts": {
-    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "precommit": "npx git-format-staged -f 'prettier --ignore-unknown --stdin --stdin-filepath \"{}\"' .",
-    "clean": "npx shx mkdir -p lib && npx shx rm -rf lib",
-    "package": "npx shx mkdir -p lib/cjs lib/esm",
-    "prebuild": "npm run clean && npm run package"
-  },
   "dependencies": {
     "@coral-xyz/anchor": "^0.31.0",
     "@helium/anchor-resolvers": "^0.10.6",
     "@helium/idls": "^0.10.6",
     "@helium/spl-utils": "^0.10.6",
+    "@helium/wallet-fanout-sdk": "^0.0.2",
     "bn.js": "^5.2.0",
     "bs58": "^4.0.1"
   },
+  "description": "Interface to the wallet fanout smart contract",
   "devDependencies": {
     "git-format-staged": "^2.1.3",
     "ts-loader": "^9.2.3",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
-  "gitHead": "fc51ac959767aed776bdcc276bb72570ef2f6439"
+  "exports": {
+    "import": "./lib/esm/src/index.js",
+    "require": "./lib/cjs/index.js",
+    "types": "./lib/types/src/index.d.ts"
+  },
+  "files": [
+    "lib"
+  ],
+  "gitHead": "fc51ac959767aed776bdcc276bb72570ef2f6439",
+  "license": "Apache-2.0",
+  "main": "./lib/cjs/index.js",
+  "module": "./lib/esm/src/index.js",
+  "name": "@helium/wallet-fanout-sdk",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/helium/tuktuk-fanout"
+  },
+  "scripts": {
+    "clean": "npx shx mkdir -p lib && npx shx rm -rf lib",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "package": "npx shx mkdir -p lib/cjs lib/esm",
+    "prebuild": "npm run clean && npm run package",
+    "precommit": "npx git-format-staged -f 'prettier --ignore-unknown --stdin --stdin-filepath \"{}\"' ."
+  },
+  "sideEffects": false,
+  "types": "./lib/types/src/index.d.ts",
+  "version": "0.0.2"
 }
