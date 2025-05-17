@@ -20,8 +20,8 @@
     "fmt": "cargo fmt --check",
     "clippy": "cargo clippy --all-targets -- -D warnings -A clippy::result_large_err -A clippy::too_many_arguments -A clippy::unexpected-cfgs",
     "generate-idl-docs": "ts-node -T scripts/generate-idl-docs.ts",
-    "heroku-postbuild": "npm run build -w hpl-docs",
-    "docs-dev": "yarn workspace hpl-docs dev"
+    "heroku-postbuild": "npm run build -w fanout-ui",
+    "fanout-ui-dev": "yarn workspace fanout-ui dev"
   },
   "workspaces": [
     "packages/*"

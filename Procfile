@@ -1,1 +1,1 @@
-web: yarn workspace hpl-docs start
+web: yarn workspace fanout-ui start
