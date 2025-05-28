@@ -3,7 +3,6 @@ import { useAnchorProvider } from '@helium/helium-react-hooks'
 import { batchInstructionsToTxsWithPriorityFee, batchSequentialParallelInstructions, bulkSendTransactions } from '@helium/spl-utils'
 import { init as initFanout, queueAuthorityKey, tokenInflowKey, voucherKey, walletShareKey } from '@helium/wallet-fanout-sdk'
 import { PublicKey, SystemProgram, TransactionInstruction } from '@solana/web3.js'
-import { useCallback } from 'react'
 import { useAsyncCallback } from 'react-async-hook'
 import { useFanout } from './useFanout'
 import { AccountLayout, getAssociatedTokenAddressSync, TOKEN_PROGRAM_ID } from '@solana/spl-token'
@@ -15,7 +14,7 @@ export const useUpdateWallet = (fanout: PublicKey | undefined) => {
 
   const provider = useAnchorProvider()
   return useAsyncCallback(
-    useCallback(async ({ wallet, shares, index }: { wallet: string, shares: number, index: number }) => {
+    async ({ wallet, shares, index }: { wallet: string, shares: number, index: number }) => {
       if (!provider) throw new Error('Provider not initialized')
       if (!fanoutInfo) throw new Error('Fanout not found')
       if (!fanout) throw new Error('Fanout not provided')
@@ -76,7 +75,7 @@ export const useUpdateWallet = (fanout: PublicKey | undefined) => {
       for (const tx of txs) {
         await bulkSendTransactions(provider, [tx])
       }
-    }, [fanoutInfo, fanout, provider])
+    }
   )
 }
 
@@ -84,7 +83,7 @@ export const useRemoveWallet = (fanout: PublicKey | undefined) => {
   const { info: fanoutInfo } = useFanout(fanout)
   const provider = useAnchorProvider()
   return useAsyncCallback(
-    useCallback(async (index: number) => {
+    async (index: number) => {
       if (!provider) throw new Error('Provider not initialized')
       if (!fanoutInfo) throw new Error('Fanout not found')
       if (!fanout) throw new Error('Fanout not provided')
@@ -130,6 +129,6 @@ export const useRemoveWallet = (fanout: PublicKey | undefined) => {
         instructions: [[closeWalletShareInstruction], voucherCloseInstructions],
       })
 
-    }, [fanoutInfo, fanout, provider])
+    }
   )
 }
