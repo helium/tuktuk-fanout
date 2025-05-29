@@ -137,12 +137,12 @@ export function TokenAccountCard({
       {!(existingInflow || tokenInflow) && (
         <button
           onClick={handleEnableFanout}
-          disabled={creatingVoucher || fanoutInfo?.totalShares === 0}
+          disabled={creatingVoucher || fanoutInfo?.totalSharesIssued === 0}
           className="w-full mt-4 px-3 py-1 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-sm cursor-pointer"
         >
           {creatingVoucher
             ? "Enabling..."
-            : fanoutInfo?.totalShares === 0
+            : fanoutInfo?.totalSharesIssued === 0
             ? "Add shares to Enable"
             : "Enable Fanout"}
         </button>
