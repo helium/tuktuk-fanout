@@ -2,7 +2,7 @@
 
 import '@/utils/bufferfill'
 import { cronJobTransactionKey, PROGRAM_ID as CRON_PROGRAM_ID } from '@helium/cron-sdk'
-import { useAnchorProvider } from '@helium/helium-react-hooks'
+import { useAnchorProvider } from '@/hooks/useAnchorProvider'
 import { batchInstructionsToTxsWithPriorityFee, bulkSendTransactions } from '@helium/spl-utils'
 import { init, queueAuthorityKey, tokenInflowKey, voucherKey } from '@helium/wallet-fanout-sdk'
 import { useWallet } from '@solana/wallet-adapter-react'

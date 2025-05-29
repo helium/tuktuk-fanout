@@ -3,7 +3,7 @@ import {
   PROGRAM_ID as CRON_PROGRAM_ID,
   cronJobTransactionKey,
 } from "@helium/cron-sdk";
-import { useAnchorProvider } from "@helium/helium-react-hooks";
+import { useAnchorProvider } from "@/hooks/useAnchorProvider";
 import {
   batchInstructionsToTxsWithPriorityFee,
   bulkSendTransactions,

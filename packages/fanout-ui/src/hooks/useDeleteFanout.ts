@@ -3,7 +3,6 @@
 import '@/utils/bufferfill'
 import { ASSOCIATED_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token'
 import { PROGRAM_ID as CRON_PROGRAM_ID, cronJobNameMappingKey, cronJobTransactionKey, userCronJobsKey } from '@helium/cron-sdk'
-import { useAnchorProvider } from '@helium/helium-react-hooks'
 import { batchParallelInstructionsWithPriorityFee } from '@helium/spl-utils'
 import { init, queueAuthorityKey, tokenInflowKey } from '@helium/wallet-fanout-sdk'
 import { getAssociatedTokenAddressSync, TOKEN_PROGRAM_ID } from '@solana/spl-token'
@@ -16,6 +15,7 @@ import { useInflowKeys, useTokenInflows } from './useInflow'
 import { TokenInfo } from './useTokenAccounts'
 import { useVoucherKeys, useVouchers } from './useVoucher'
 import { useWalletShares } from './useWalletShares'
+import { useAnchorProvider } from './useAnchorProvider'
 
 export const useDeleteFanout = (fanout: PublicKey | undefined, tokens: TokenInfo[] = []) => {
   const provider = useAnchorProvider()

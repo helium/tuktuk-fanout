@@ -1,11 +1,11 @@
 'use client'
 
-import { useAnchorProvider } from '@helium/helium-react-hooks'
 import { init } from '@helium/wallet-fanout-sdk'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useCallback, useEffect, useState } from 'react'
 import { FanoutV0 } from './useFanout'
 import { ProgramAccount } from '@coral-xyz/anchor'
+import { useAnchorProvider } from './useAnchorProvider'
 
 export function useAuthorityFanouts() {
   const provider = useAnchorProvider()

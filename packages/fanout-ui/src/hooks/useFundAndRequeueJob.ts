@@ -1,5 +1,5 @@
 import { PROGRAM_ID as CRON_PROGRAM_ID } from '@helium/cron-sdk'
-import { useAnchorProvider } from '@helium/helium-react-hooks'
+import { useAnchorProvider } from '@/hooks/useAnchorProvider'
 import { batchParallelInstructionsWithPriorityFee } from '@helium/spl-utils'
 import { nextAvailableTaskIds, taskKey } from '@helium/tuktuk-sdk'
 import { globalStateKey, init } from '@helium/wallet-fanout-sdk'

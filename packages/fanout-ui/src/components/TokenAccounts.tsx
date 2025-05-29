@@ -27,11 +27,11 @@ import {
   createAssociatedTokenAccountInstruction,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
-import { useAnchorProvider } from "@helium/helium-react-hooks";
 import { useAsync, useAsyncCallback } from "react-async-hook";
 import { useAccounts } from "@helium/account-fetch-cache-hooks";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { useFanout } from "@/hooks/useFanout";
+import { useAnchorProvider } from "@/hooks/useAnchorProvider";
 
 function isValidUrl(urlString: string) {
   try {

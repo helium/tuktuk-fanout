@@ -2,7 +2,7 @@
 
 import '@/utils/bufferfill'
 import { PROGRAM_ID as CRON_PROGRAM_ID, cronJobKey, cronJobNameMappingKey, init as initCron, userCronJobsKey } from '@helium/cron-sdk'
-import { useAnchorProvider } from '@helium/helium-react-hooks'
+import { useAnchorProvider } from '@/hooks/useAnchorProvider'
 import { batchParallelInstructionsWithPriorityFee } from '@helium/spl-utils'
 import { init as initTuktuk, nextAvailableTaskIds, taskKey } from '@helium/tuktuk-sdk'
 import { fanoutKey, globalStateKey, init, queueAuthorityKey } from '@helium/wallet-fanout-sdk'

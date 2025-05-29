@@ -1,5 +1,5 @@
 import { useAccounts } from '@helium/account-fetch-cache-hooks'
-import { useAnchorProvider } from '@helium/helium-react-hooks'
+import { useAnchorProvider } from '@/hooks/useAnchorProvider'
 import { batchParallelInstructionsWithPriorityFee } from '@helium/spl-utils'
 import { tokenInflowKey } from '@helium/wallet-fanout-sdk'
 import { Account, createAssociatedTokenAccountInstruction, getAssociatedTokenAddressSync, TOKEN_PROGRAM_ID, unpackAccount } from '@solana/spl-token'

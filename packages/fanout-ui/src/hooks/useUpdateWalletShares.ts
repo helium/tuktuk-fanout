@@ -1,5 +1,5 @@
 import { cronJobTransactionKey, PROGRAM_ID as CRON_PROGRAM_ID } from '@helium/cron-sdk'
-import { useAnchorProvider } from '@helium/helium-react-hooks'
+import { useAnchorProvider } from '@/hooks/useAnchorProvider'
 import { batchInstructionsToTxsWithPriorityFee, batchSequentialParallelInstructions, bulkSendTransactions } from '@helium/spl-utils'
 import { init as initFanout, queueAuthorityKey, tokenInflowKey, voucherKey, walletShareKey } from '@helium/wallet-fanout-sdk'
 import { PublicKey, SystemProgram, TransactionInstruction } from '@solana/web3.js'
