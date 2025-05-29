@@ -15,7 +15,7 @@ export function ClientRoot({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <WalletProviderDynamic>
-        <div className="max-w-7xl mx-auto p-6">
+        <div className="md:max-w-7xl md:mx-auto md:px-6 p-0 w-full">
           {children}
         </div>
       </WalletProviderDynamic>
