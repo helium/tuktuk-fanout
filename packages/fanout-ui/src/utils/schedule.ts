@@ -11,8 +11,8 @@ export type Schedule = {
 
 export const scheduleToString = (schedule: Schedule): string => {
   const now = new Date()
-  const minute = schedule.minute ?? now.getMinutes()
-  const hour = schedule.hour ?? now.getHours()
+  const minute = schedule.minute ?? now.getUTCMinutes()
+  const hour = schedule.hour ?? now.getUTCHours()
 
   switch (schedule.type) {
     case 'hourly':
