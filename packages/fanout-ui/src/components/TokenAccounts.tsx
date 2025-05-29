@@ -31,6 +31,7 @@ import { useAnchorProvider } from "@helium/helium-react-hooks";
 import { useAsync, useAsyncCallback } from "react-async-hook";
 import { useAccounts } from "@helium/account-fetch-cache-hooks";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
+import { useFanout } from "@/hooks/useFanout";
 
 function isValidUrl(urlString: string) {
   try {
@@ -62,6 +63,7 @@ export function TokenAccountCard({
     json,
     loading: metadataLoading,
   } = useMetaplexMetadata(mint);
+  const { info: fanoutInfo } = useFanout(fanout);
   const {
     execute: createVouchers,
     loading: creatingVoucher,
@@ -135,10 +137,14 @@ export function TokenAccountCard({
       {!(existingInflow || tokenInflow) && (
         <button
           onClick={handleEnableFanout}
-          disabled={creatingVoucher}
+          disabled={creatingVoucher || fanoutInfo?.totalShares === 0}
           className="w-full mt-4 px-3 py-1 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-sm cursor-pointer"
         >
-          {creatingVoucher ? "Enabling..." : "Enable Fanout"}
+          {creatingVoucher
+            ? "Enabling..."
+            : fanoutInfo?.totalShares === 0
+            ? "Add shares to Enable"
+            : "Enable Fanout"}
         </button>
       )}
     </div>
